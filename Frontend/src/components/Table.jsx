@@ -129,7 +129,6 @@ export default function Table() {
       .delete(`http://localhost:8080/patients/${id}`)
       .then((response) => {
         console.log(response.data.message);
-        setPatients(patients.filter((patient) => patient.ID !== id));
       })
       .catch((error) => {
         console.error("Error deleting patient:", error);
