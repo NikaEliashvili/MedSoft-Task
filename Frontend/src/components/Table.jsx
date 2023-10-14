@@ -3,23 +3,7 @@ import axios from "axios";
 import TBody from "./TBody";
 import THead from "./THead";
 import TableButtons from "./TableButtons";
-function formatDate(curDate) {
-  const dateFromServer = new Date(curDate); // Received from the server
-  const patientDob = dateFromServer
-    .toLocaleDateString("en-GB")
-    .replaceAll("/", ".");
-  return patientDob === "Invalid Date" ? curDate : patientDob;
-}
-
-function formatDateForSQL(curDate) {
-  const inputDateString = curDate;
-  const [day, month, year] = inputDateString.split(".");
-
-  const parsedDate = new Date(`${year}-${month}-${day}`);
-  // Format the date as YYYY-MM-DD
-  const formattedDate = parsedDate.toISOString().split("T")[0];
-  return formattedDate;
-}
+import { formatDate, formatDateForSQL } from "../formatFunctions";
 
 export default function Table() {
   const [patientsData, setPatientsData] = useState([]);
@@ -78,7 +62,7 @@ export default function Table() {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsAdding(false);
-    const ModifedPatientsData = [...patientsDataCopy]?.map((patient) => {
+    const ModifedPatientsData = [...addedPatients]?.map((patient) => {
       const newDate = formatDateForSQL(patient?.Dob);
       const modifyGenderID =
         patient?.GenderID === -1 ? 1 : parseInt(patient?.GenderID);
@@ -94,11 +78,10 @@ export default function Table() {
         Phone: validPhoneNumber,
       };
     });
-    const patientData = ModifedPatientsData[ModifedPatientsData.length - 1];
     try {
       const response = await axios.post(
         "http://localhost:8080/patients",
-        patientData,
+        ModifedPatientsData,
         {
           headers: {
             "Content-Type": "application/json",

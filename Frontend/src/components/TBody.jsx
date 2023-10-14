@@ -165,9 +165,9 @@ export default function TBody({
 
   const patientsRows = patientsDataCopy?.map((patient) => {
     const patientGender =
-      patient?.GenderID === 1
+      patient?.GenderID == 1
         ? "მამრობითი"
-        : patient?.GenderID === 2
+        : patient?.GenderID == 2
         ? "მდედრობითი"
         : "";
     if (
@@ -220,7 +220,12 @@ export default function TBody({
             />
           </td>
           <td>
-            <select name={`GenderID`} defaultValue={1} onChange={handleChange}>
+            <select
+              name={`GenderID`}
+              value={patientForm?.GenderID === -1 ? 1 : patientForm?.GenderID}
+              onChange={handleChange}
+              onClick={handleChange}
+            >
               <option value={1}>მამრობითი</option>
               <option value={2}>მდედრობითი</option>
             </select>
